@@ -51,33 +51,25 @@ Restart SSH:
 
 ## Set up firewall
 `sudo ufw status`
-Status: inactive
+
 `sudo ufw default deny incoming`
-Default incoming policy changed to 'deny'
-(be sure to update your rules accordingly)
+
 `sudo ufw default allow outgoing`
-Default outgoing policy changed to 'allow'
-(be sure to update your rules accordingly)
+
 `sudo ufw allow ssh`
-Rules updated
-Rules updated (v6)
+
 `sudo ufw allow 2200/tcp`
-Rules updated
-Rules updated (v6)
+
 `sudo ufw allow www`
-Rules updated
-Rules updated (v6)
+
 `sudo ufw allow 123/udp`
-Rules updated
-Rules updated (v6)
+
 `sudo ufw deny 22`
-Rules updated
-Rules updated (v6)
+
 `sudo ufw enable`
-Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
-Firewall is active and enabled on system startup
+
 `sudo ufw status`
-Status: active
+
 
 To                         Action      From
 --                         ------      ----
@@ -95,6 +87,7 @@ To                         Action      From
 
 ## Create a new user account named grader
 ubuntu@ip-172-26-3-72:~$ `sudo adduser grader`
+```
 Adding user `grader' ...
 Adding new group `grader' (1001) ...
 Adding new user `grader' (1001) with group `grader' ...
@@ -111,29 +104,38 @@ Enter the new value, or press ENTER for the default
     Home Phone []: 
     Other []: 
 Is the information correct? [Y/n] Y
+```
 
 When you are logged in as Ubuntu, and you want to temporarily “login” as grader:
-`su - grader`
-When you are done, 
-`ctrl+d` or type in `exit` to return to login as Ubuntu
 
+`su - grader`
+
+When you are done, 
+
+`ctrl+d` or type in `exit` to return to login as Ubuntu
 
 ## Give grader the permission to sudo
 `sudo visudo`
 
 Add
+
 `grader ALL=(ALL:ALL) ALL`
+
 under this line 
+
 `root ALL=(ALL:ALL) ALL`
 
 `command + X` to exit, `Y` to save changes.
 
 ## Create an SSH key pair for grader using ssh-keygen tool
 Generate key pair on local machine, not on the server.
+
 Open a new terminal on local,run ssh-keygen to generate key pairs
 
 $ `ssh-keygen`
+
 Generating public/private rsa key pair.
+
 Enter file in which to save the key (/Users/greenroses/.ssh/id_rsa): 
 /Users/greenroses/.ssh/linuxUdacityProject
 
@@ -142,182 +144,254 @@ On the local machine, read out the content of linuxUdacityProject.pub `cat .ssh/
 Install a public key:
 
 ubuntu@ip-172-26-3-72:~$ `su - grader`
+
 Password: 
+
 grader@ip-172-26-3-72:~$ `mkdir .ssh`
+
 grader@ip-172-26-3-72:~$ `touch .ssh/authorized_keys`
+
 grader@ip-172-26-3-72:~$ `nano .ssh/authorized_keys`
+
 paste in the content of the linuxUdacityProject.pub file
+
 grader@ip-172-26-3-72:~$ `chmod 700 .ssh`
+
 grader@ip-172-26-3-72:~$ `chmod 600 .ssh/authorized_keys` 
+
 grader@ip-172-26-3-72:~$ `sudo nano /etc/ssh/sshd_config`
 [sudo] password for grader: 
+
 grader@ip-172-26-3-72:~$ `sudo service ssh restart`
 
 To login in as grader: 
+
 `ssh grader@13.59.189.169 -p 2200 -i ~/.ssh/linuxUdacityProject`
 
 Forcing key based authentication:
+
 `sudo nano /etc/ssh/sshd_config`
+
 Look for `# Change to no to disable tunnelled clear text passwords`, and change its following line from `PasswordAuthentication yes` to `PasswordAuthentication no`.
 
 Restart the service to apply the change:
+
 `sudo service ssh restart`
 
 ##  Configure the local timezone to UTC.
+
 grader@ip-172-26-3-72:~$ `sudo dpkg-reconfigure tzdata`
 
 Current default time zone: 'US/Eastern'
+
 Local time is now:      Thu Nov 16 03:28:12 EST 2017.
+
 Universal Time is now:  Thu Nov 16 08:28:12 UTC 2017.
 
 grader@ip-172-26-3-72:~$ `sudo dpkg-reconfigure tzdata`
 
 Current default time zone: 'Etc/UTC'
+
 Local time is now:      Thu Nov 16 08:29:18 UTC 2017.
+
 Universal Time is now:  Thu Nov 16 08:29:18 UTC 2017.
 
 ## Install and configure PostgreSQL
+
 `sudo apt-get install postgresql`
 
 Create a new database user named catalog that has limited permissions to your catalog application database.
+
 `sudo adduser catalog`
 
 grader@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo su - postgres`
+
 postgres@ip-172-26-3-72:~$ `psql`
+
 psql (9.5.10)
+
 Type "help" for help.
 
 postgres=# `ALTER USER catalog CREATEDB;`
+
 ALTER ROLE
+
 postgres=# `CREATE DATABASE categoryitemwithusers WITH OWNER catalog;`
+
 CREATE DATABASE
+
 postgres=# `\q`
+
 postgres@ip-172-26-3-72:~$ `exit`
+
 logout
 
 ## Install git
+
 `sudo apt-get install git`
+
 `git config --global user.name 'yourname'`
+
 `git config --global user.email 'youremail'`
 
 ## Deploy flask app on ubuntu
 1. install and enable mod_wsgi
-`sudo apt-get install libapache2-mod-wsgi-py3`
-`sudo a2enmod wsgi`
+
+    `sudo apt-get install libapache2-mod-wsgi-py3`
+
+    `sudo a2enmod wsgi`
 
 2. clone the Item Catalog project from the Github repository created earlier in this Nanodegree program
-`cd /car/www`
-`sudo mkdir catalog`
-`cd catalog`
-`sudo git clone https://github.com/greenroses/catalog.git`
 
-change name of the application.py file to __init__.py
-`mv application.py __init__.py`
+    `cd /car/www`
 
-After cloning the repository, the directory structure looks like:
-----var
---------www
-------------catalog
------------------catalog
----------------------static
----------------------templates
----------------------__init__.py
----------------------...some other files
+    `sudo mkdir catalog`
+
+    `cd catalog`
+
+    `sudo git clone https://github.com/greenroses/catalog.git`
+
+    change name of the application.py file to __init__.py
+
+    `mv application.py __init__.py`
+
+    After cloning the repository, the directory structure looks like:
+
+    ----var
+
+    --------www
+
+    ------------catalog
+
+    -----------------catalog
+
+    ---------------------static
+
+    ---------------------templates
+
+    ---------------------__init__.py
+
+    ---------------------...some other files
 
 
 3. install flask
-grader@ip-172-26-3-72:/$ `sudo apt-get install python-pip`
-ubuntu@ip-172-26-3-72:/$ `sudo pip install virtualenv`
-ubuntu@ip-172-26-3-72:/$ `sudo virtualenv venv`
-ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo virtualenv venv`
-`sudo chmod -R 777 venv`
-ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `source venv/bin/activate`
-(venv) ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip install Flask`
+    
+    grader@ip-172-26-3-72:/$ `sudo apt-get install python-pip`
 
-ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo apt-get install libapache2-mod-wsqi-py3`
+    ubuntu@ip-172-26-3-72:/$ `sudo pip install virtualenv`
 
-ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo pip install Flask-SQLAlchemy`
+    ubuntu@ip-172-26-3-72:/$ `sudo virtualenv venv`
+
+    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo virtualenv venv`
+
+    `sudo chmod -R 777 venv`
+
+    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `source venv/bin/activate`
+
+    (venv) ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip install Flask`
+
+    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo apt-get install libapache2-mod-wsqi-py3`
+
+    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo pip install Flask-SQLAlchemy`
 
 4. configure a new virtual host
-grader@ip-172-26-3-72:/$`sudo nano /etc/apache2/sites-available/catalog.conf`
 
-add the following code to the file:
-```
-<VirtualHost *:80>
-        ServerName 13.59.189.169
-        ServerAdmin admin@13.59.189.169
-        ServerAlias ec2-13-59-189-169.us-east-2.compute.amazonaws.com
-        WSGIScriptAlias / /var/www/catalog/catalog.wsgi
-        <Directory /var/www/catalog/catalog/>
-                Order allow,deny
-                Allow from all
-        </Directory>
-        Alias /static /var/www/catalog/catalog/static
-        <Directory /var/www/catalog/catalog/static/>
-                Order allow,deny
-                Allow from all
-        </Directory>
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        LogLevel warn
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-```
+    grader@ip-172-26-3-72:/$`sudo nano /etc/apache2/sites-available/catalog.conf`
 
-In the file, the fourth line
-`ServerAlias ec2-13-59-189-169.us-east-2.compute.amazonaws.com`
-is added so that the app can be accessed by the url.
+    add the following code to the file:
+    ```
+    <VirtualHost *:80>
+            ServerName 13.59.189.169
+            ServerAdmin admin@13.59.189.169
+            ServerAlias ec2-13-59-189-169.us-east-2.compute.amazonaws.com
+            WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+            <Directory /var/www/catalog/catalog/>
+                    Order allow,deny
+                    Allow from all
+            </Directory>
+            Alias /static /var/www/catalog/catalog/static
+            <Directory /var/www/catalog/catalog/static/>
+                    Order allow,deny
+                    Allow from all
+            </Directory>
+            ErrorLog ${APACHE_LOG_DIR}/error.log
+            LogLevel warn
+            CustomLog ${APACHE_LOG_DIR}/access.log combined
+    </VirtualHost>
+    ```
 
-To enable the virtual host: 
-grader@ip-172-26-3-72:/$ `sudo a2ensite catalog`
+    In the file, the fourth line
+    `ServerAlias ec2-13-59-189-169.us-east-2.compute.amazonaws.com`
+    is added so that the app can be accessed by the url.
+
+    To enable the virtual host:
+
+    grader@ip-172-26-3-72:/$ `sudo a2ensite catalog`
 
 5. crete the .wsgi file
 
-grader@ip-172-26-3-72:/$ `cd /var/www/catalog`
-grader@ip-172-26-3-72:/var/www/catalog$ `sudo nano catalog.wsgi`
+    grader@ip-172-26-3-72:/$ `cd /var/www/catalog`
+    grader@ip-172-26-3-72:/var/www/catalog$ `sudo nano catalog.wsgi`
 
-Add the following code to the file:
-```
-#!/usr/bin/python
-import sys
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/catalog/")
+    Add the following code to the file:
+    ```
+    #!/usr/bin/python
+    import sys
+    import logging
+    logging.basicConfig(stream=sys.stderr)
+    sys.path.insert(0,"/var/www/catalog/")
 
-from catalog import app as application
-application.secret_key = 'Add your secret key'
-```
+    from catalog import app as application
+    application.secret_key = 'Add your secret key'
+    ```
 
-now the directory looks like:
-----var
---------www
-------------catalog.wsgi
-------------catalog
------------------catalog
----------------------static
----------------------templates
----------------------venv
----------------------__init__.py
----------------------...some other files
+    now the directory looks like:
+    ----var
+
+    --------www
+
+    ------------catalog.wsgi
+
+    ------------catalog
+
+    -----------------catalog
+
+    ---------------------static
+
+    ---------------------templates
+
+    ---------------------venv
+
+    ---------------------__init__.py
+
+    ---------------------...some other files
 
 6. restart apache to apply changes
-`sudo service apache2 restart`
+
+    `sudo service apache2 restart`
 
 
 ## Install some other softwares
 Install `requests`:
+
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo pip install requests`
 
 Initially, psycopg2 was installed by:
+
 (venv) ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip install psycopg2`
+
 (venv) ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip3 install psycopg2`
+
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip install psycopg2`
 
 `pip3` is used because I am using python3 and `pip` only installs for python2.
 
 However, the following error occurred:
+
 `ImportError: No module named 'psycopg2'`
 
 After research and test, adding `-H` in the command fixed the error:
+
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install psycopg2`
 
 Similarily, when trying to install sqlalchemy, flask and apache2 with `pip install` or `pip3 install`, I kept getting errors like `ImportError: No module named 'flask'` although flask was already installed. It seems that the program was not being able to access the installed flask. 
@@ -349,19 +423,26 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
     |json.loads(h.request(url, 'GET')[1])|json.loads(h.request(url, 'GET')[1].decode('utf-8'))|
 
 2. changes made in __init__.py file
+
     1)<del>`from database_setup import Base, Category, Item, User`</del>
+    
     `from catalog.database_setup import Base, Category, Item, User`
 
     2) the last line: 
+
     <del>`app.run(host='0.0.0.0', port=8000)`</del>
+
     app.run()
 
     3) add full path for client_secrets.json file:
+
     `json.loads(
         open('/var/www/catalog/catalog/client_secrets.json', 'r')`
 
-    4) change all 8000 in all the html files to the new url
+    4) change all 8000 in all the html files to the new url:
+
     <del>`<a href="http://localhost:8000/"`</del>
+
     `<a href="http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com"`
 
 3. modify client_secrets.json for google sign in
@@ -370,13 +451,19 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
     3) add the url and redirect url
 
         Authorized JavaScript origins:
+
         http://13.59.189.169
+
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com
 
         Authorized redirect URIs:
+
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/login
+
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/logout
+
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/gconnect
+
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/gdisconnect
 
     4) download JSON, copy the content and paste into the client_secrets.json file
