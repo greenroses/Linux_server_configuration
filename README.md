@@ -376,13 +376,15 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 
 ## Deploy the Item Catalog project
 ## Set up catalog project in server so that it functions correctly when visiting the server’s IP address in a browser. 
-1. Somehow in the process of installing software with `pip` and `pip3`, I decided to switch from python 2 to python 3. Here are the changes made: 
-    In __init__.py file:
-    | python 2  | python 3 |
-    | --------- | --------:|
-    | xrange    | range    |
-    | print " " | print("")|
-    |json.loads(h.request(url, 'GET')[1])|json.loads(h.request(url, 'GET')[1].decode('utf-8'))|
+1. Somehow in the process of installing software with `pip` and `pip3`, I decided to switch from python 2 to python 3. Here are the changes made in the __init__.py file:
+
+    1) change `xrange` to `range`
+
+    2) change `print " "` to `print("")`
+
+    3) change `json.loads(h.request(url, 'GET')[1])` to
+
+              `json.loads(h.request(url, 'GET')[1].decode('utf-8'))`
 
 2. changes made in __init__.py file
 
