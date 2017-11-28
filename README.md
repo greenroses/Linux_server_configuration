@@ -9,18 +9,18 @@ SSH port: 2200
 http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/
 
 ## List of software installed
-libapache2-mod-wsgi-py3
-PostgreSQL
-git
-mod_wsgi
-python-pip
-virtualenv
-Flask
-Flask-SQLAlchemy
-requests
-psycopg2
-sqlalchemy
-oauth2client
++ libapache2-mod-wsgi-py3
++ PostgreSQL
++ git
++ mod_wsgi
++ python-pip
++ virtualenv
++ Flask
++ Flask-SQLAlchemy
++ requests
++ psycopg2
++ sqlalchemy
++ oauth2client
 
 ## Summary of configuration changes made
 ## Get server
@@ -28,49 +28,55 @@ Start a new Ubuntu Linux server instance on Amazon Lightsail based on Udacity in
 
 ## SSH into server
 Download the defaut key from Amazon Lightsail account page. It is required that your private key files are NOT accessible by others.
+
 `chmod 600 ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
 
 To ssh into server:
+
 `ssh -i ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
 
 ## Update all currently installed packages
 `sudo apt-get update`
+
 `sudo apt-get upgrade`
 
 ## change the SSH port from 22 to 2200
 Open file and change 22 at the fifth line to 2200: 
+
 `sudo nano /etc/ssh/sshd_config`
+
 Restart SSH: 
+
 `sudo service ssh restart`
 
 ## Set up firewall
-ubuntu@ip-172-26-3-72:~$ `sudo ufw status`
+`sudo ufw status`
 Status: inactive
-ubuntu@ip-172-26-3-72:~$ `sudo ufw default deny incoming`
+`sudo ufw default deny incoming`
 Default incoming policy changed to 'deny'
 (be sure to update your rules accordingly)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw default allow outgoing`
+`sudo ufw default allow outgoing`
 Default outgoing policy changed to 'allow'
 (be sure to update your rules accordingly)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw allow ssh`
+`sudo ufw allow ssh`
 Rules updated
 Rules updated (v6)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw allow 2200/tcp`
+`sudo ufw allow 2200/tcp`
 Rules updated
 Rules updated (v6)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw allow www`
+`sudo ufw allow www`
 Rules updated
 Rules updated (v6)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw allow 123/udp`
+`sudo ufw allow 123/udp`
 Rules updated
 Rules updated (v6)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw deny 22`
+`sudo ufw deny 22`
 Rules updated
 Rules updated (v6)
-ubuntu@ip-172-26-3-72:~$ `sudo ufw enable`
+`sudo ufw enable`
 Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
 Firewall is active and enabled on system startup
-ubuntu@ip-172-26-3-72:~$ `sudo ufw status`
+`sudo ufw status`
 Status: active
 
 To                         Action      From
@@ -367,7 +373,7 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
         http://13.59.189.169
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com
 
-        Authorized redirect URIs
+        Authorized redirect URIs:
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/login
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/logout
         http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/gconnect
@@ -377,7 +383,6 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 
 4. Run python lotsofitems.py to populate database
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `python lotsofitems.py`
-added category items!
 
 ## Make sure that your .git directory is not publicly accessible via a browser!
 Put the following line in a .htaccess file at the root of your web server (/ver/catalog/):
@@ -389,14 +394,19 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo service apache2 restart`
 
 ## Useful code
 `sudo service apache2 restart`
+
 `sudo tail /var/log/apache2/error.log`
+
 `source venv/bin/activate`
 
 `sudo -i -u postgres`
+
 `psql`
 
 The following decides whether the system is going to run the app with python2 or python3:
+
 `sudo apt-get install libapache2-mod-wsqi-py3`
+
 `sudo apt-get install libapache2-mod-wsgi python-dev`
 
 
