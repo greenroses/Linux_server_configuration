@@ -68,19 +68,7 @@ Restart SSH:
 
 `sudo ufw enable`
 
-`sudo ufw status`
-
-
-To                         Action      From
---                         ------      ----
-22                         DENY        Anywhere                  
-2200/tcp                   ALLOW       Anywhere                  
-80/tcp                     ALLOW       Anywhere                  
-123/udp                    ALLOW       Anywhere                  
-22 (v6)                    DENY        Anywhere (v6)             
-2200/tcp (v6)              ALLOW       Anywhere (v6)             
-80/tcp (v6)                ALLOW       Anywhere (v6)             
-123/udp (v6)               ALLOW       Anywhere (v6)             
+`sudo ufw status`         
 
 ## To ssh into server after port changing
 `ssh ubuntu@13.59.189.169 -p 2200 -i ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
@@ -180,21 +168,7 @@ Restart the service to apply the change:
 
 ##  Configure the local timezone to UTC.
 
-grader@ip-172-26-3-72:~$ `sudo dpkg-reconfigure tzdata`
-
-Current default time zone: 'US/Eastern'
-
-Local time is now:      Thu Nov 16 03:28:12 EST 2017.
-
-Universal Time is now:  Thu Nov 16 08:28:12 UTC 2017.
-
-grader@ip-172-26-3-72:~$ `sudo dpkg-reconfigure tzdata`
-
-Current default time zone: 'Etc/UTC'
-
-Local time is now:      Thu Nov 16 08:29:18 UTC 2017.
-
-Universal Time is now:  Thu Nov 16 08:29:18 UTC 2017.
+`sudo dpkg-reconfigure tzdata`
 
 ## Install and configure PostgreSQL
 
@@ -257,22 +231,16 @@ logout
 
     After cloning the repository, the directory structure looks like:
 
+    ```
     ----var
-
     --------www
-
     ------------catalog
-
     -----------------catalog
-
     ---------------------static
-
     ---------------------templates
-
     ---------------------__init__.py
-
     ---------------------...some other files
-
+    ```
 
 3. install flask
     
@@ -346,25 +314,19 @@ logout
     ```
 
     now the directory looks like:
+    
+    ```
     ----var
-
     --------www
-
     ------------catalog.wsgi
-
     ------------catalog
-
     -----------------catalog
-
     ---------------------static
-
     ---------------------templates
-
     ---------------------venv
-
     ---------------------__init__.py
-
     ---------------------...some other files
+    ```
 
 6. restart apache to apply changes
 
@@ -417,7 +379,7 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 1. Somehow in the process of installing software with `pip` and `pip3`, I decided to switch from python 2 to python 3. Here are the changes made: 
     In __init__.py file:
     | python 2  | python 3 |
-    | --------- | -------- |
+    | --------- | --------:|
     | xrange    | range    |
     | print " " | print("")|
     |json.loads(h.request(url, 'GET')[1])|json.loads(h.request(url, 'GET')[1].decode('utf-8'))|
