@@ -388,7 +388,7 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 
 2. changes made in __init__.py file
 
-    1)<del>`from database_setup import Base, Category, Item, User`</del>
+    1) <del>`from database_setup import Base, Category, Item, User`</del>
     
     `from catalog.database_setup import Base, Category, Item, User`
 
