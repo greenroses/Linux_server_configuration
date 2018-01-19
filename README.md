@@ -2,11 +2,11 @@
 Created a Linux server instance using Amazon Lightsail, secure and set up the Linux server. This is the sixth project of Udacity Full Stack Nanodegree program.
 
 ## IP address and SSH port
-Public IP: 13.59.189.169
+Public IP: 52.87.186.18
 SSH port: 2200
 
 ## Complete URL to the web application
-http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/
+http://ec2-52-87-186-18.compute-1.amazonaws.com/
 
 ## List of software installed
 + libapache2-mod-wsgi-py3
@@ -29,11 +29,11 @@ Start a new Ubuntu Linux server instance on Amazon Lightsail based on Udacity in
 ## SSH into server
 Download the defaut key from Amazon Lightsail account page. It is required that your private key files are NOT accessible by others.
 
-`chmod 600 ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
+`chmod 600 ~/Downloads/LightsailDefaultPrivateKey-us-east-1.pem`
 
 To ssh into server:
 
-`ssh -i ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
+`ssh -i ~/Downloads/LightsailDefaultPrivateKey-us-east-1.pem ubuntu@52.87.186.18`
 
 ## Update all currently installed packages
 `sudo apt-get update`
@@ -71,7 +71,7 @@ Restart SSH:
 `sudo ufw status`         
 
 ## To ssh into server after port changing
-`ssh ubuntu@13.59.189.169 -p 2200 -i ~/Downloads/LightsailDefaultPrivateKey-us-east-2.pem`
+`ssh ubuntu@52.87.186.18 -p 2200 -i ~/Downloads/LightsailDefaultPrivateKey-us-east-1.pem`
 
 ## Create a new user account named grader
 ubuntu@ip-172-26-3-72:~$ `sudo adduser grader`
@@ -174,10 +174,6 @@ Restart the service to apply the change:
 
 `sudo apt-get install postgresql`
 
-Create a new database user named catalog that has limited permissions to your catalog application database.
-
-`sudo adduser catalog`
-
 grader@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo su - postgres`
 
 postgres@ip-172-26-3-72:~$ `psql`
@@ -186,19 +182,26 @@ psql (9.5.10)
 
 Type "help" for help.
 
-postgres=# `ALTER USER catalog CREATEDB;`
-
+postgres=# CREATE USER catalog WITH PASSWORD 'catalog';
+CREATE ROLE
+postgres=# ALTER USER catalog CREATEDB;
 ALTER ROLE
-
-postgres=# `CREATE DATABASE categoryitemwithusers WITH OWNER catalog;`
-
+postgres=# CREATE DATABASE categoryitemwithusers WITH OWNER catalog;
 CREATE DATABASE
-
-postgres=# `\q`
-
-postgres@ip-172-26-3-72:~$ `exit`
-
+postgres=# \c categoryitemwithusers 
+You are now connected to database "categoryitemwithusers" as user "postgres".
+categoryitemwithusers=# REVOKE ALL ON SCHEMA public FROM public;
+REVOKE
+categoryitemwithusers=# GRANT ALL ON SCHEMA public TO catalog;
+GRANT
+categoryitemwithusers=# \q
+postgres@ip-172-26-8-184:~$ exit
 logout
+
+Update create_engine line in __init__.py and database_setup.py files: 
+engine = create_engine('postgresql://catalog:catalog@localhost/categoryitemwithusers')
+
+Here, the first 'catalog' is the user name, and the second 'catalog' is password of the user.
 
 ## Install git
 
@@ -217,7 +220,7 @@ logout
 
 2. clone the Item Catalog project from the Github repository created earlier in this Nanodegree program
 
-    `cd /car/www`
+    `cd /var/www`
 
     `sudo mkdir catalog`
 
@@ -258,7 +261,7 @@ logout
 
     (venv) ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `pip install Flask`
 
-    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo apt-get install libapache2-mod-wsqi-py3`
+    ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo apt-get install libapache2-mod-wsgi-py3`
 
     ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo pip install Flask-SQLAlchemy`
 
@@ -269,9 +272,9 @@ logout
     add the following code to the file:
     ```
     <VirtualHost *:80>
-            ServerName 13.59.189.169
-            ServerAdmin admin@13.59.189.169
-            ServerAlias ec2-13-59-189-169.us-east-2.compute.amazonaws.com
+            ServerName 52.87.186.18 
+            ServerAdmin admin@52.87.186.18 
+            ServerAlias ec2-52-87-186-18.compute-1.amazonaws.com
             WSGIScriptAlias / /var/www/catalog/catalog.wsgi
             <Directory /var/www/catalog/catalog/>
                     Order allow,deny
@@ -356,9 +359,9 @@ After research and test, adding `-H` in the command fixed the error:
 
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install psycopg2`
 
-Similarily, when trying to install sqlalchemy, flask and apache2 with `pip install` or `pip3 install`, I kept getting errors like `ImportError: No module named 'flask'` although flask was already installed. It seems that the program was not being able to access the installed flask. 
+Similarily, when trying to install sqlalchemy and flask with `pip install` or `pip3 install`, I kept getting errors like `ImportError: No module named 'flask'` although flask was already installed. It seems that the program was not being able to access the installed flask. 
 
-In the end, I installed `sqlalchemy, flask, apache2 and oauth2client` with
+In the end, I installed `psycopg2, sqlalchemy, flask and oauth2client` with
 
 `sudo -H pip3 install`
 
@@ -407,7 +410,7 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 
     <del>`<a href="http://localhost:8000/"`</del>
 
-    `<a href="http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com"`
+    `<a href="http://ec2-52-87-186-18.compute-1.amazonaws.com"`
 
 3. modify client_secrets.json for google sign in
     1) create a new project on Google API, and create a new client ID
@@ -418,17 +421,17 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 
         http://13.59.189.169
 
-        http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com
+        http://ec2-52-87-186-18.compute-1.amazonaws.com
 
         Authorized redirect URIs:
 
-        http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/login
+        http://ec2-52-87-186-18.compute-1.amazonaws.com/login
 
-        http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/logout
+        http://ec2-52-87-186-18.compute-1.amazonaws.com/logout
 
-        http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/gconnect
+        http://ec2-52-87-186-18.compute-1.amazonaws.com/gconnect
 
-        http://ec2-13-59-189-169.us-east-2.compute.amazonaws.com/gdisconnect
+        http://ec2-52-87-186-18.compute-1.amazonaws.com/gdisconnect
 
     4) download JSON, copy the content and paste into the client_secrets.json file
 
@@ -436,8 +439,8 @@ ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `sudo -H pip3 install oauth2clie
 ubuntu@ip-172-26-3-72:/var/www/catalog/catalog$ `python lotsofitems.py`
 
 ## Make sure that your .git directory is not publicly accessible via a browser!
-Put the following line in a .htaccess file at the root of your web server (/ver/catalog/):
-
+Put the following line in a .htaccess file at the root of your web server (/var/www/catalog/):
+`sudo nano .htaccess`
 `RedirectMatch 404 /\.git`
 
 ## Restart to apply changes
